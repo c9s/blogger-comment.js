@@ -30,12 +30,14 @@ function get_comments(blogId,postId,hook) {
         type: 'GET',
         data: '' ,
         complete: function(response) {
-            var json; //eval("json="+response.responseText);
-            json = eval(response.responseText);
-            if( json )
-                hook( json );
-            else 
-                return;
+            var json; 
+            try {
+                eval("json="+response.responseText);
+                //json = eval(response.responseText);
+            }
+            catch(err) {
+                alert(err.description);
+            }
     }});
 }
 
