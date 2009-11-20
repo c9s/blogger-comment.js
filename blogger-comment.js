@@ -62,12 +62,12 @@ $(document.body).ready(function(){
         var m;
         if( m = link.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
             var blogId = m[1]; var postId = m[2];
-            var f = $(t).parent().find('div#comment-appended-' + postId);
+            var f = $(t).parent().parent().find('div#comment-appended-' + postId);
             ( f[0] ) 
                 ? f.toggle('slide')
                 : get_comments(blogId,postId,function(json) {
                     var html = gen_template( blogId, postId , json )
-                    $(t).parent().append( html ); });
+                    $(t).parent().parent().append( html ); });
         }
         return false;
     });
