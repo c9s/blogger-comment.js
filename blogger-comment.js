@@ -1,4 +1,6 @@
 
+;
+
 function gen_template(blogId,postId,json)
 {
     var title = json.feed.title;
@@ -23,7 +25,7 @@ function gen_template(blogId,postId,json)
 
 function get_comments(blogId,postId,hook) {
     //curl 'http://www.blogger.com/feeds/3147036244016021082/8413271979129208960/comments/default?alt=json'
-    jQuery.ajax({ 
+    $.ajax({ 
         url: 'http://www.blogger.com/feeds/'+blogId+'/'+postId+'/comments/default?alt=json',
         type: 'GET',
         data: '' ,
@@ -37,19 +39,19 @@ function get_comments(blogId,postId,hook) {
     }});
 }
 
-jQuery.ready(function(){
-    jQuery('a.comment-link').click(function(e){
+$.ready(function(){
+    $('a.comment-link').click(function(e){
         var t = e.target;
         var link = t.href;
         var m;
         if( m = link.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
             var blogId = m[1]; var postId = m[2];
-            var f = jQuery(t).parent().find('div#comment-appended-' + postId);
+            var f = $(t).parent().find('div#comment-appended-' + postId);
             ( f[0] ) 
                 ? f.toggle('slide')
                 : get_comments(blogId,postId,function(json) {
                     var html = gen_template( blogId, postId , json )
-                    jQuery(t).parent().append( html ); });
+                    $(t).parent().append( html ); });
         }
         return false;
     });
