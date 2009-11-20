@@ -30,10 +30,11 @@ function get_comments(blogId,postId,hook) {
         type: 'GET',
         data: '' ,
         complete: function(response) {
+            console.log(response);
             var json; 
             try {
                 eval("json="+response.responseText);
-                //json = eval(response.responseText);
+                hook(json);
             }
             catch(err) {
                 alert(err.description);
