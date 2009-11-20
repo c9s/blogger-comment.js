@@ -9,8 +9,9 @@ function setup_css()
             + '.comment-content { margin:6px 10px; } '
             + '.comment-author { margin-left: 50px; } '
             + '.comment-published { margin-left: 60px;  } '
+            + 'a.comment-new-link { display:block; text-align:right; text-decoration:underline; width:90%; } '
             + '</script>';
-    jQuery(document.body).append( content );
+    $(document.body).append( content );
 }
 
 
@@ -36,6 +37,9 @@ function gen_template(blogId,postId,json)
         html += '</div>';
     }
     html += '</div>';
+    html += '<a class="comment-new-link" href="https://www.blogger.com/comment.g?'
+        + 'blogID='+blogId 
+        +'&postID='+postId+'">Post Comment</a>';
     return html;
 }
 
@@ -51,7 +55,7 @@ function get_comments(blogId,postId,hook) {
     }});
 }
 
-//$(document).ready(function(){
+$(document.body).ready(function(){
     $('a.comment-link').click(function(e){
         var t = e.target;
         var link = t.href;
@@ -69,4 +73,4 @@ function get_comments(blogId,postId,hook) {
     });
 
     setup_css();
-//});
+});
