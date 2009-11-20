@@ -38,7 +38,7 @@ function gen_template(blogId,postId,json)
 {
     var html = '<div class="comment-appended" id="comment-appended-'+postId+'">';
     for( var i=0; i < json.feed.entry.length ; i++ ) {
-        var e = entry[i];
+        var e = json.feed.entry[i];
         html += '<div class="comment-entry">';
         html += '<div class="comment-content">' + e.content.$t + '</div>';
         html += '<div class="comment-author">' 
