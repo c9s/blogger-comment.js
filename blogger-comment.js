@@ -43,7 +43,7 @@ function gen_template(blogId,postId,json)
     return html;
 }
 
-function get_comments(blogId,postId,hook) {
+function get_comments(postId,hook) {
     //curl 'http://www.blogger.com/feeds/3147036244016021082/8413271979129208960/comments/default?alt=json'
     $.ajax({ 
         url: '/feeds/'+postId+'/comments/default?alt=json',
@@ -59,13 +59,12 @@ $(document.body).ready(function(){
     $('a.comment-link').click(function(e){
         var t = e.target;
         var link = t.href;
-        var m;
-        if( m = link.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
+        var m; if( m = link.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
             var blogId = m[1]; var postId = m[2];
             var f = $(t).parent().parent().find('div#comment-appended-' + postId);
             ( f[0] ) 
                 ? f.toggle('slide')
-                : get_comments(blogId,postId,function(json) {
+                : get_comments(postId,function(json) {
                     var html = gen_template( blogId, postId , json )
                     $(t).parent().parent().append( html ); });
         }
