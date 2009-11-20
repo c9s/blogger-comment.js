@@ -1,7 +1,19 @@
 
+/* 
+ * Blogger Comment Toggle
+ *
+ * Author: Cornelius (c9s)
+ * Email:  cornelius.howl@DELETE_ME.gmail.com 
+ * Web:    http://oulixe.us/
+ * Blog:   http://c9s.blogspot.com/
+ * Github: http://github.com/c9s
+ * 
+ * c9s@twitter.com
+ * c9s@plurk.com
+ *
+ */
 ;
-
-function setup_css()
+function append_css()
 {
     var content = '<style type="text/css">'
             + '.comment-appended { margin: 30px; } '
@@ -14,15 +26,10 @@ function setup_css()
     $(document.body).append( content );
 }
 
-
 function gen_template(blogId,postId,json)
 {
-    var title = json.feed.title;
-    var author = json.author;
-    var entry = json.feed.entry;
-    var html = '';
-    html += '<div class="comment-appended" id="comment-appended-'+postId+'">';
-    for( var i=0; i < entry.length ; i++ ) {
+    var html = '<div class="comment-appended" id="comment-appended-'+postId+'">';
+    for( var i=0; i < json.feed.entry.length ; i++ ) {
         var e = entry[i];
         html += '<div class="comment-entry">';
         html += '<div class="comment-content">' + e.content.$t + '</div>';
@@ -31,19 +38,18 @@ function gen_template(blogId,postId,json)
                 + ' (web `<a href="' + e.author[0].uri.$t + '">' + e.author[0].uri.$t + '\'</a>)'
                 + '<i>(email `' +e.author[0].email.$t + '\')</i>'
                 + '</div>';
-
         html += '<div class="comment-published">' + e.published.$t + '</div>';
 
         html += '</div>';
     }
     html += '</div>';
     html += '<a class="comment-new-link" href="https://www.blogger.com/comment.g?'
-        + 'blogID='+blogId 
-        +'&postID='+postId+'">Post Comment</a>';
+                + 'blogID='+blogId 
+                + '&postID='+postId+'">Post Comment</a>';
     return html;
 }
 
-function get_comments(postId,hook) {
+function retrieve_comments(postId,hook) {
     //curl 'http://www.blogger.com/feeds/3147036244016021082/8413271979129208960/comments/default?alt=json'
     $.ajax({ 
         url: '/feeds/'+postId+'/comments/default?alt=json',
@@ -58,18 +64,19 @@ function get_comments(postId,hook) {
 $(document.body).ready(function(){
     $('a.comment-link').click(function(e){
         var t = e.target;
-        var link = t.href;
-        var m; if( m = link.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
+        var m; if( m = t.href.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
             var blogId = m[1]; var postId = m[2];
             var f = $(t).parent().parent().find('div#comment-appended-' + postId);
             ( f[0] ) 
                 ? f.toggle('slide')
-                : get_comments(postId,function(json) {
-                    var html = gen_template( blogId, postId , json )
-                    $(t).parent().parent().append( html ); });
+                : retrieve_comments(postId,function(json) {
+                        $(t).parent().parent().append(
+                            gen_template( blogId, postId , json )
+                        );
+                    });
         }
         return false;
     });
-
-    setup_css();
+    append_css();
 });
+
