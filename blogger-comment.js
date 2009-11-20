@@ -11,6 +11,14 @@
  * c9s@twitter.com
  * c9s@plurk.com
  *
+ *
+ * Usage:
+ *
+ *    add a html/javascript widget in your blogger template
+ *    put the below html:
+ *
+ *      <script type="text/javascript" src="http://github.com/c9s/blogger-comment.js/raw/master/blogger-comment.js"></script>
+ *
  */
 ;
 function append_css()
