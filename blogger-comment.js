@@ -37,6 +37,7 @@ function append_css()
 function gen_template(blogId,postId,json)
 {
     var html = '<div class="comment-appended" id="comment-appended-'+postId+'">';
+    json.feed.entry.reverse();
     for( var i=0; i < json.feed.entry.length ; i++ ) {
         var e = json.feed.entry[i];
         html += '<div class="comment-entry">';
@@ -57,31 +58,35 @@ function gen_template(blogId,postId,json)
     return html;
 }
 
+//curl 'http://www.blogger.com/feeds/3147036244016021082/8413271979129208960/comments/default?alt=json'
 function retrieve_comments(postId,hook) {
-    //curl 'http://www.blogger.com/feeds/3147036244016021082/8413271979129208960/comments/default?alt=json'
     $.ajax({ 
         url: '/feeds/'+postId+'/comments/default?alt=json',
         type: 'GET',
         complete: function(response) {
-            var json; 
-            eval("json="+response.responseText);
+            var json; eval("json="+response.responseText);
             hook(json);
     }});
 }
 
+function match_link(o) {
+    var m; 
+    return ( m = o.href.match( /blogID=(\d+)\&postID=(\d+)/ ) ) 
+         ? { blogId: m[1] , postId: m[2] }
+         : 0 ;
+}
+
 $(document.body).ready(function(){
     $('a.comment-link').click(function(e){
-        var t = e.target;
-        var m; if( m = t.href.match( /blogID=(\d+)\&postID=(\d+)/ ) ) {
-            var blogId = m[1]; var postId = m[2];
-            var f = $(t).parent().parent().find('div#comment-appended-' + postId);
+        var d, t = e.target;
+        if( d = match_link(t) ) {
+            var f = $(t).parent().parent().find('div#comment-appended-' + d.postId);
             ( f[0] ) 
                 ? f.toggle('slide')
-                : retrieve_comments(postId,function(json) {
+                : retrieve_comments( d.postId,function(json) {
                         $(t).parent().parent().append(
-                            gen_template( blogId, postId , json )
-                        );
-                    });
+                            gen_template( d.blogId, d.postId , json )
+                        ); });
         }
         return false;
     });
